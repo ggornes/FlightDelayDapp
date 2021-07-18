@@ -10,7 +10,7 @@ Boilerplate to deploy and interact with smart contracts on the Ethereum network
 - hardhat
 
 ### Instructions
-`npx hardhat node` To start a local test network
-`npx hardhat compile` to compile the contracts ABI and generate artifacts
-`npx hardhat run scripts/deploy.js --network localhost` to deploy the sample contract to the local test network
-`npm start` to start the React server UI
+- `npx hardhat node` To start a local test network
+- `npx hardhat compile` to compile the contracts ABI and generate artifacts
+- `npx hardhat run scripts/deploy.js --network localhost` to deploy the sample contract to the local test network
+- `npm start` to start the React server UI
