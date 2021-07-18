@@ -18,4 +18,15 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
+
+  // import abis and artifacts into React
+  paths: {
+    artifacts: './src/artifacts',
+  },
+  // hardhat configuration for local network
+  networks: {
+    hardhat: {
+      chainId: 1337
+    }
+  }
 };
