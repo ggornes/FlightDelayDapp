@@ -24,6 +24,11 @@ async function main() {
   await token.deployed();
   console.log("Token contract deployed to: ", token.address);
 
+  const Poliza = await hre.ethers.getContractFactory("PolizaRetraso");
+  const poliza = await Poliza.deploy();
+  await poliza.deployed();
+  console.log("PolizaRetraso contract deployed to: ", poliza.address);  
+
 
 }
 

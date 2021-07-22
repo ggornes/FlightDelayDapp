@@ -10,7 +10,7 @@ function Web3ConnectionManager() {
 
     // connect to wallet
     async function requestAccount() {
-        if (isMetamask) {
+        // if (isMetamask) {
             const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const balance = await provider.getBalance(account);
@@ -23,9 +23,9 @@ function Web3ConnectionManager() {
                 setActiveAccountBalance(balance.toString())
             }
             
-        } else {
-            alert("Please make sure MetaMask plugin is installed")
-        }
+        // } else {
+        //     alert("Please make sure MetaMask plugin is installed")
+        // }
         
     }
 
@@ -36,7 +36,8 @@ function Web3ConnectionManager() {
         // Check MetaMask
         if (typeof window.ethereum !== 'undefined') {
             console.log("Metamask is enabled")
-            setIsMetamask(true)            
+            setIsMetamask(true)
+            requestAccount()         
         }
     }, [])
 
