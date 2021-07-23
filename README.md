@@ -1,5 +1,5 @@
-# React dApp
-Boilerplate to deploy and interact with smart contracts on the Ethereum network
+# Flight Delay dApp
+Descentralized application to interact with a flight delay smart insurance contract on the Ethereum network.
 
 ### Prerequisites
 - NodeJS
