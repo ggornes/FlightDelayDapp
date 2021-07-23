@@ -2,58 +2,75 @@
 pragma solidity >=0.4.11 <0.9.0;
 
 contract FdContract {
-
-  event NewPolicy(uint policyId);
-
+    
   struct Policy {
-    // uint id;
-    address policyholder;
-    address insurer;
-    uint riskFactor;
-    uint256 premium;
-    uint256 maxClaimAmount;
-    uint status; // 0-onTime; 1-Delayed; 5-Pending
-    uint delayTime;
-  }
-
-  Policy[] public policies;
-
-  mapping(uint => address) public policyToPolicyholder;
-  mapping(uint => address) public policyToInsurer;
-  mapping(address => uint) public policyholderPolicyCount;
-  mapping(address => uint) public insurerPolicyCount;
-
-  // map the policyId to the Policy class (Policy(id))
-  mapping(uint => Policy) public idToPolicy;
-  mapping(address => uint256) public retirosPendientes;
-
-  function createNewPolicy(uint riskFactor) payable public {
-
-    address _policyholder = msg.sender;
-    address _insurer = address(0);
-    uint _premium = msg.value;
-
-    // uint uniqueId = _generateUniqueId(_policyholder);
-    // Policy memory thePolicy = Policy(_policyholder, _insurer, riskFactor, _premium, 0, 5, 90);
+      uint id;
+      address policyholder;
+      address insurer;
+      uint riskFactor;
+      uint premium;
+      uint maxClaimAmount;
+      uint status; // 0-onTime; 1-Delayed; 5-Pending
+      uint delayTime; // default 90
+    }
     
-    policies.push(Policy(_policyholder, _insurer, riskFactor, _premium, 0, 5, 90));
-    uint id = policies.length;
-
-    emit NewPolicy(id);
+    event submitNewPolicy(uint indexed _id);
     
-  }
 
-  function getPolicies() public view returns(Policy[] memory) {
-    return policies;
+    // instance of a Policy with default values
+    Policy private blankPolicy;
+    
+    // array to store policies.
+    Policy[] public policies;
+    
+    constructor() public {
+        blankPolicy.delayTime = 90;
+        blankPolicy.status = 5;
+    }
+    
 
-  }
+    
+    function newPolicy(uint _riskFactor) public payable {
+        Policy memory new_policy = blankPolicy;
+        new_policy.id = policies.length + 1;
+        new_policy.riskFactor = _riskFactor;
+        new_policy.premium = msg.value;
+        new_policy.policyholder = msg.sender;
+        new_policy.maxClaimAmount = msg.value * 6;
+        
+        
+        policies.push(new_policy);
+        
+        emit submitNewPolicy(new_policy.id);
+    }
+    
+    
+    
+    function insurePolicy(uint _id) public payable {
+        
+        uint _index = _id - 1;
+        
+        Policy memory submittedPolicy = policies[_index];
+        uint _maxClaimAmount = msg.value;
+        
+        require(submittedPolicy.id == _id);
+        require(submittedPolicy.insurer == address(0));
+        require(submittedPolicy.policyholder != msg.sender);
+        require(submittedPolicy.maxClaimAmount == _maxClaimAmount);
+        
+        submittedPolicy.insurer = msg.sender; // override address(0) (default insurer address) with real insurer address
+        submittedPolicy.maxClaimAmount = _maxClaimAmount;
+        
+        // update values
+        policies[_index] = submittedPolicy;
+        
+    }
 
-  // function _generateUniqueId(address policyholder) private view returns(uint) {
-  //   // sould form a {addres+timestamp} string like "0xfdn8198yfew6f546effxw5er+10:05:am"
-  //   uint rand = uint(keccak256(abi.encodePacked(block.timestamp)));
-
-  // }
-
-
+    // Note: ideally data could be requested from client side to a subgraph that queries the blockchain directly
+    //       but for now, we can request this data to the contract directly.
+    function getPolicies() public view returns(Policy[] memory) {
+        return policies;
+    }
+    
 
 }
