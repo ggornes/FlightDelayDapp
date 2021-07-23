@@ -67,7 +67,7 @@ contract FdContract {
     }
 
     // Note: ideally data could be requested from client side to a subgraph that queries the blockchain directly
-    //       but for now, we can request this data to the contract directly.
+    //       but for now, we can request this data directly from the contract.
     function getPolicies() public view returns(Policy[] memory) {
         return policies;
     }

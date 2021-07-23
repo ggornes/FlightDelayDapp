@@ -29,7 +29,7 @@ function Fd() {
         fetchPolicies()
       };
 
-      // todo: get function working on the contract
+      // todo: look how to create a subgraph https://thegraph.com/docs/developer/quick-start
 
       async function fetchPolicies() {
         if (typeof window.ethereum !== 'undefined') {
@@ -71,12 +71,6 @@ function Fd() {
           console.log("submited policy id: ", submitedPolicy[0].id)
           console.log("submited policy premium: ", submitedPolicy[0].premium.toString())
           console.log("submited policy maxClaimAmount: ", submitedPolicy[0].maxClaimAmount.toString())
-          const maxClaimAmount = submitedPolicy[0].maxClaimAmount.toString() // be careful with types
-          // const bigMaxClaimAmount = ethers.utils.parseEther(maxClaimAmount.toString())
-          console.log(maxClaimAmount)
-          // console.log(bigMaxClaimAmount)
-
-
 
           try {
             const transaction = await contract.insurePolicy(submitedPolicy[0].id, {value: submitedPolicy[0].maxClaimAmount});
