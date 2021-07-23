@@ -27,7 +27,13 @@ async function main() {
   const Poliza = await hre.ethers.getContractFactory("PolizaRetraso");
   const poliza = await Poliza.deploy();
   await poliza.deployed();
-  console.log("PolizaRetraso contract deployed to: ", poliza.address);  
+  console.log("PolizaRetraso contract deployed to: ", poliza.address);
+
+
+  const Fd = await hre.ethers.getContractFactory("FdContract");
+  const fd = await Fd.deploy();
+  await fd.deployed();
+  console.log("FD contract deployed to: ", fd.address);
 
 
 }
