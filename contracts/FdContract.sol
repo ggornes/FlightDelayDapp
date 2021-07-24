@@ -36,7 +36,7 @@ contract FdContract {
         new_policy.riskFactor = _riskFactor;
         new_policy.premium = msg.value;
         new_policy.policyholder = msg.sender;
-        new_policy.maxClaimAmount = msg.value * 6;
+        new_policy.maxClaimAmount = new_policy.premium * 6 * new_policy.riskFactor / 10000;
         
         
         policies.push(new_policy);
