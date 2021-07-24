@@ -31,41 +31,10 @@ function Fd() {
       await transaction.wait()
     }
 
-    fetchPoliciesView()
+    // fetchPoliciesView()
+    getPolicyItems()
   };
 
-  // todo: look how to create a subgraph https://thegraph.com/docs/developer/quick-start
-
-  async function fetchPolicies() {
-    if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
-      const contract = new ethers.Contract(fdContractAddress, FdContract.abi, provider)
-      try {
-        const policies = await contract.getPolicies()
-        // console.log('Contract policies: ', policies)
-        return (policies)
-      } catch (err) {
-        console.log('Error: ', err)
-      }          
-    }
-  }
-
-  async function fetchPolicyById(_id) {
-    const policies = await fetchPolicies()
-    try {
-      const selectedPolicy = policies.filter(
-        policy => {
-          return policy.id == _id // Todo: Check types and use === 
-        }
-      )
-      console.log('Selected policy: ', selectedPolicy)
-      return (selectedPolicy)
-    } catch (err) {
-      console.log('Error: ', err)
-    }
-  }      
-      
-      
   async function insurePolicy(_id) {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
@@ -90,12 +59,36 @@ function Fd() {
 
   }
 
+  // todo: look how to create a subgraph https://thegraph.com/docs/developer/quick-start
 
-  async function fetchPolicyByIdView(_id) {
-    const policy = await fetchPolicyById(_id)
-    const policyView = new Policy(policy)
-    console.log("policy view data: ", policyView.data)
-    return policyView.data
+  async function fetchPolicies() {
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
+      const contract = new ethers.Contract(fdContractAddress, FdContract.abi, provider)
+      try {
+        const policies = await contract.getPolicies()
+        console.log('Contract policies: ', policies)
+        return (policies)
+
+        const policyItems = policies.map(makePolicyItems) // await ?
+        console.log('Sweet policies: ', policyItems)
+        // return PolicyItems
+
+      } catch (err) {
+        console.log('Error: ', err)
+      }          
+    }
+  }
+
+  // function to parse policies read from the contract into a UI types class to handle data views
+  const makePolicyItems = policyItem => new Policy(policyItem);
+
+  async function getPolicyItems() {
+    const policies = await fetchPolicies()
+    const policyItems = policies.map(makePolicyItems)
+    console.log(policyItems)
+    policyItems.map(m => {console.log(m.data)})
+    setAllPoliciesValue(policyItems)
   }
 
   async function fetchPoliciesView() {
@@ -104,15 +97,8 @@ function Fd() {
     var policiesViewPromise = [];
     var counter = 0;
 
-    policiesViewPromise = policies.map(async p => {console.log("p id", p.id); await fetchPolicyByIdView(p.id.toString())})
 
-    // const policiesView = Promise.all(policiesViewPromise.map(Promise.all.bind(Promise)))
-
-    // const policiesView = Promise.all(policiesViewPromise.map(p => Promise.all(p)))
-
-    // const policiesView = await Promise.all(policiesViewPromise.flat());
-
-    const policiesView = policies.map(p => {console.log("pppppppppp ", p); return new Policy(p)})
+    const policiesView = policies.map(p => {return new Policy(p)})
 
 
     // policiesView = await policies.map(async p => {
@@ -133,7 +119,35 @@ function Fd() {
     console.log("Poliocies view 2 ", policiesView)
     // setAllPoliciesValue(policiesView);
     return policiesView
+  }  
+
+  async function fetchPolicyById(_id) {
+    const policies = await fetchPolicies()
+    try {
+      const selectedPolicy = policies.filter(
+        policy => {
+          return policy.id == _id // Todo: Check types and use === 
+        }
+      )
+      console.log('Selected policy: ', selectedPolicy)
+      return (selectedPolicy)
+    } catch (err) {
+      console.log('Error: ', err)
+    }
+  }      
+      
+      
+
+
+
+  async function fetchPolicyByIdView(_id) {
+    const policy = await fetchPolicyById(_id)
+    const policyView = new Policy(policy)
+    console.log("policy view data: ", policyView.data)
+    return policyView.data
   }
+
+
   
       
 
@@ -144,6 +158,7 @@ function Fd() {
       <>
           <button onClick={fetchPolicies}>Fetch Polizas</button>
           <button onClick={fetchPoliciesView}>Fetch Polizas pretty</button>
+          <button onClick={getPolicyItems}>Fetch Polizas pretty</button>
           <br />
           <div>
           <ul>
@@ -151,7 +166,7 @@ function Fd() {
               allPolicies.map((p, index) => {
                 return (
                   <li key={index}>
-                    { p.policyholder }
+                    <p>{p.data.id} | {p.data.premium/100000000000000000} | {p.data.maxClaimAmount/1000000000000000000000000000}</p>
                   </li>
                 );
               })
