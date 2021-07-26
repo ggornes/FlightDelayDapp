@@ -10,11 +10,31 @@ contract FdContract {
       uint riskFactor;
       uint premium;
       uint maxClaimAmount;
-      uint status; // 0-onTime; 1-Delayed; 5-Pending
-      uint delayTime; // default 90
+      Status flightStatus; // 0-onTime; 1-Delayed; 5-Pending
+      DelayTime delayTime; // default 90
+    }
+
+    enum DelayTime {
+        OnTime,
+        Late,
+        VeryLate,
+        Excessive,
+        Canceled
     }
     
+    enum Status {
+        OnTime,
+        Delayed,
+        Pending
+    }
+
+    mapping(address => uint) public withdrawalAmount;
+    
     event submitNewPolicy(uint indexed _id);
+
+    event issuePolicy(uint indexed _id);
+
+    uint maxMultiplier = 5;
     
 
     // instance of a Policy with default values
@@ -24,8 +44,8 @@ contract FdContract {
     Policy[] public policies;
     
     constructor() public {
-        blankPolicy.delayTime = 90;
-        blankPolicy.status = 5;
+        blankPolicy.delayTime = DelayTime.OnTime;
+        blankPolicy.flightStatus = Status.Pending;
     }
     
 
@@ -36,7 +56,7 @@ contract FdContract {
         new_policy.riskFactor = _riskFactor;
         new_policy.premium = msg.value;
         new_policy.policyholder = msg.sender;
-        new_policy.maxClaimAmount = new_policy.premium * 6 * new_policy.riskFactor / 10000;
+        new_policy.maxClaimAmount = new_policy.premium * maxMultiplier * new_policy.riskFactor / 10000;
         
         
         policies.push(new_policy);
@@ -63,14 +83,79 @@ contract FdContract {
         
         // update values
         policies[_index] = submittedPolicy;
+
+        emit issuePolicy(submittedPolicy.id);
         
     }
+
+
+    function setPolicyOutcome(uint _id, DelayTime randomDelayTime) public payable {
+        uint _index = _id - 1;
+        Policy memory currentPolicy = policies[_index];
+        uint multiplier = 0;
+        
+        require(currentPolicy.flightStatus == Status.Pending);
+
+        if (randomDelayTime == DelayTime.OnTime) {
+            currentPolicy.flightStatus = Status.OnTime;
+        } else {
+            currentPolicy.flightStatus = Status.Delayed;
+            multiplier = getMultiplier(randomDelayTime);
+            currentPolicy.delayTime = randomDelayTime;
+
+        }
+        
+        if (currentPolicy.flightStatus != Status.Pending && currentPolicy.insurer == address(0)) {
+            // if the policy was submitted but never issued and the event finished
+            // the policyholder should receive the premium back
+            withdrawalAmount[currentPolicy.policyholder] += currentPolicy.premium;
+        } else {
+            if (currentPolicy.flightStatus == Status.Delayed) {
+                withdrawalAmount[currentPolicy.policyholder] += currentPolicy.premium * multiplier/10 * currentPolicy.riskFactor/10000;
+                withdrawalAmount[currentPolicy.insurer] += currentPolicy.maxClaimAmount + currentPolicy.premium - currentPolicy.premium * multiplier/10 * currentPolicy.riskFactor/10000;
+            } else {
+                withdrawalAmount[currentPolicy.insurer] += currentPolicy.premium + currentPolicy.maxClaimAmount;
+            }
+        }
+
+        payable(currentPolicy.policyholder).transfer(withdrawalAmount[currentPolicy.policyholder]);
+        payable(currentPolicy.insurer).transfer(withdrawalAmount[currentPolicy.insurer]);
+
+        // update values    
+        policies[_index] = currentPolicy;
+        
+
+    }
+
+    function getMultiplier(DelayTime dt) pure private returns(uint) {
+        uint multiplier = 0;
+        if (dt != DelayTime.OnTime) {
+            if (dt == DelayTime.Late) {
+                multiplier = 20;
+            } else {
+                if (dt == DelayTime.VeryLate) {
+                    multiplier = 30;
+                } else {
+                    if (dt == DelayTime.Excessive) {
+                        multiplier = 40;
+                    } else {
+                        multiplier = 60;
+                    }
+                }
+            }
+        }
+        return multiplier;
+    }
+
+
 
     // Note: ideally data could be requested from client side to a subgraph that queries the blockchain directly
     //       but for now, we can request this data directly from the contract.
     function getPolicies() public view returns(Policy[] memory) {
         return policies;
     }
-    
 
+
+
+    
 }
