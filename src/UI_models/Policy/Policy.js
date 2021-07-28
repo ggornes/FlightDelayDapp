@@ -1,6 +1,7 @@
 // import schemas from "./schemas";
 import schemas from "./schemas"
 // var schemas = require("./schemas.js");
+import { ethers } from 'ethers'
 
 var Policy = function (data) {
     console.log('data: ', data)
@@ -17,9 +18,9 @@ Policy.prototype.sanitize = function (data) {
     const policyholder = data.policyholder.toString();
     const insurer = data.insurer.toString();
     const riskFactor = data.riskFactor.toString();
-    const premium = data.premium.toString();
-    const maxClaimAmount = data.maxClaimAmount.toString();
-    const status = data.status.toString();
+    const premium = ethers.utils.formatEther(data.premium);
+    const maxClaimAmount = ethers.utils.formatEther(data.maxClaimAmount);
+    const status = data.flightStatus.toString();
     const delayTime = data.delayTime.toString();
     return({
         id,

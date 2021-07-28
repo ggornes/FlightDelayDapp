@@ -14,13 +14,15 @@ function Web3ConnectionManager() {
             const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const balance = await provider.getBalance(account);
+            const formattedBalance = ethers.utils.formatEther(balance)
             console.log(balance)
+            console.log(formattedBalance)
 
             if (account) {
                 setIsConnected(true);
                 console.log("Connected Account: ", account)
                 setActiveAccount(account)
-                setActiveAccountBalance(balance.toString())
+                setActiveAccountBalance(formattedBalance)
             }
             
         // } else {

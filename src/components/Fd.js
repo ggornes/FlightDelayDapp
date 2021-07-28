@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import Policy from '../UI_models/Policy/Policy'
 
 
-const fdContractAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+const fdContractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
 
 function Fd() {
 
@@ -25,14 +25,14 @@ function Fd() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(fdContractAddress, FdContract.abi, signer);
-      const transaction = await contract.newPolicy(ethers.utils.parseEther(riskFactor), {value: premium});
+      const transaction = await contract.newPolicy(riskFactor, {value: ethers.utils.parseEther(premium)});
       setRiskFactorValue('')
       setPremiumValue('')
       await transaction.wait()
     }
 
     // fetchPoliciesView()
-    getPolicyItems()
+    // getPolicyItems()
   };
 
   async function insurePolicy(_id) {
@@ -65,6 +65,7 @@ function Fd() {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
       const contract = new ethers.Contract(fdContractAddress, FdContract.abi, provider)
+
       try {
         const policies = await contract.getPolicies()
         console.log('Contract policies: ', policies)
@@ -85,41 +86,42 @@ function Fd() {
 
   async function getPolicyItems() {
     const policies = await fetchPolicies()
-    const policyItems = policies.map(makePolicyItems)
-    console.log(policyItems)
-    policyItems.map(m => {console.log(m.data)})
-    setAllPoliciesValue(policyItems)
+    try {
+      const policyItems = policies.map(makePolicyItems)
+      console.log(policyItems)
+      policyItems.map(m => {console.log(m.data)})
+      setAllPoliciesValue(policyItems)      
+    } catch(err) {
+      console.log("Could not fetch policies. Err: ", err)
+    }
+    
+    
+
   }
 
-  async function fetchPoliciesView() {
-    const policies = await fetchPolicies()
-    console.log(policies.length)
-    var policiesViewPromise = [];
-    var counter = 0;
-
-
-    const policiesView = policies.map(p => {return new Policy(p)})
-
-
-    // policiesView = await policies.map(async p => {
-    //   // console.log(p)
-    //   // console.log(p.id.toString())
-    //   // const pView = await fetchPolicyByIdView(p.id.toString())
-    //   const pView = await fetchPolicyByIdView(p.id.toString())
-    //   console.log("p view ", pView)
-    //   policiesView.push(pView)
-    //   console.log("Poliocies view", policiesView)
-    //   // setAllPoliciesValue(policiesView);
-    //   counter++;
-    //   console.log("counter ", counter )
-    //   // return policiesView
-    // })
-
-
-    console.log("Poliocies view 2 ", policiesView)
-    // setAllPoliciesValue(policiesView);
-    return policiesView
-  }  
+  // async function fetchPoliciesView() {
+  //   const policies = await fetchPolicies()
+  //   console.log(policies.length)
+  //   var policiesViewPromise = [];
+  //   var counter = 0;
+  //   const policiesView = policies.map(p => {return new Policy(p)})
+  //   // policiesView = await policies.map(async p => {
+  //   //   // console.log(p)
+  //   //   // console.log(p.id.toString())
+  //   //   // const pView = await fetchPolicyByIdView(p.id.toString())
+  //   //   const pView = await fetchPolicyByIdView(p.id.toString())
+  //   //   console.log("p view ", pView)
+  //   //   policiesView.push(pView)
+  //   //   console.log("Poliocies view", policiesView)
+  //   //   // setAllPoliciesValue(policiesView);
+  //   //   counter++;
+  //   //   console.log("counter ", counter )
+  //   //   // return policiesView
+  //   // })
+  //   console.log("Poliocies view 2 ", policiesView)
+  //   // setAllPoliciesValue(policiesView);
+  //   return policiesView
+  // }  
 
   async function fetchPolicyById(_id) {
     const policies = await fetchPolicies()
@@ -156,9 +158,8 @@ function Fd() {
 
   return(
       <>
-          <button onClick={fetchPolicies}>Fetch Polizas</button>
-          <button onClick={fetchPoliciesView}>Fetch Polizas pretty</button>
-          <button onClick={getPolicyItems}>Fetch Polizas pretty</button>
+          <button onClick={fetchPolicies}>Fetch Policies</button>
+          <button onClick={getPolicyItems}>Fetch Policy Items</button>
           <br />
           <div>
           <ul>
@@ -166,7 +167,7 @@ function Fd() {
               allPolicies.map((p, index) => {
                 return (
                   <li key={index}>
-                    <p>{p.data.id} | {p.data.premium/100000000000000000} | {p.data.maxClaimAmount/1000000000000000000000000000}</p>
+                    <p>{p.data.id} | {p.data.premium} | {p.data.maxClaimAmount}</p>
                   </li>
                 );
               })
