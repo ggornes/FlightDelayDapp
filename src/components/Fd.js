@@ -1,9 +1,15 @@
 import FdContract from '../artifacts/contracts/FdContract.sol/FdContract.json'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ethers } from 'ethers'
 
 import Policy from '../UI_models/Policy/Policy'
+
+import { Button } from '@material-ui/core';
+
+
+import PolicyListView from './PolicyListView'
+import NewPolicyDialog from './NewPolicyDialog'
 
 
 const fdContractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
@@ -15,26 +21,49 @@ function Fd() {
   const [policyId, setPolicyIdValue] = useState('')
   const [allPolicies, setAllPoliciesValue] = useState([])
 
+  const updatePremium = (premiumValue) => {
+    setPremiumValue(premiumValue)
+  }
+
+  const updateRiskFactor = (riskFactorValue) => {
+    setRiskFactorValue(riskFactorValue)
+  }
 
 
-  async function newPolicy() {
-    if (!premium || !riskFactor) return // check that premium and risk factor are not empty
+  /**
+   * Submit a new policy. Account signature is required
+   * @returns 
+   */
+  async function newPolicy(_premium=premium, _riskfactor=riskFactor) {
+    console.log("Creating new policy")
+    console.log("premium: ", _premium)
+    console.log("Risk factor: ", _riskfactor)
 
+    if (!_premium || !_riskfactor) {
+      console.log("_premium: ", _premium)
+      console.log("Risk factor: ", _riskfactor)
+      return (console.log("Premiun or risk factor could not be read")) // check that premium and risk factor are not empty
+    }
+     
     if (typeof window.ethereum !== 'undefined') {
       // await requestAccount();
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(fdContractAddress, FdContract.abi, signer);
-      const transaction = await contract.newPolicy(riskFactor, {value: ethers.utils.parseEther(premium)});
+      const transaction = await contract.newPolicy(_riskfactor, {value: ethers.utils.parseEther(_premium)});
       setRiskFactorValue('')
       setPremiumValue('')
       await transaction.wait()
     }
 
     // fetchPoliciesView()
-    // getPolicyItems()
+    getPolicyItems()
   };
 
+  /**
+   * Insure a selected policy. Signer is required
+   * @param {string} _id 
+   */
   async function insurePolicy(_id) {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
@@ -71,8 +100,8 @@ function Fd() {
         console.log('Contract policies: ', policies)
         return (policies)
 
-        const policyItems = policies.map(makePolicyItems) // await ?
-        console.log('Sweet policies: ', policyItems)
+        // const policyItems = policies.map(makePolicyItems)
+        // console.log('Sweet policies: ', policyItems)
         // return PolicyItems
 
       } catch (err) {
@@ -81,48 +110,38 @@ function Fd() {
     }
   }
 
+
+
+
+  /**
+   * Convert policy object read from FdContract and parse into a more readable Policy type
+   * @param {*} policyItem 
+   * @returns 
+   */
   // function to parse policies read from the contract into a UI types class to handle data views
   const makePolicyItems = policyItem => new Policy(policyItem);
 
+
+  /**
+   * 
+   */
   async function getPolicyItems() {
     const policies = await fetchPolicies()
     try {
-      const policyItems = policies.map(makePolicyItems)
+      const policyItems = policies.map(makePolicyItems) // policies.map(p => makePolicyItems(p))
       console.log(policyItems)
       policyItems.map(m => {console.log(m.data)})
       setAllPoliciesValue(policyItems)      
     } catch(err) {
       console.log("Could not fetch policies. Err: ", err)
     }
-    
-    
-
   }
 
-  // async function fetchPoliciesView() {
-  //   const policies = await fetchPolicies()
-  //   console.log(policies.length)
-  //   var policiesViewPromise = [];
-  //   var counter = 0;
-  //   const policiesView = policies.map(p => {return new Policy(p)})
-  //   // policiesView = await policies.map(async p => {
-  //   //   // console.log(p)
-  //   //   // console.log(p.id.toString())
-  //   //   // const pView = await fetchPolicyByIdView(p.id.toString())
-  //   //   const pView = await fetchPolicyByIdView(p.id.toString())
-  //   //   console.log("p view ", pView)
-  //   //   policiesView.push(pView)
-  //   //   console.log("Poliocies view", policiesView)
-  //   //   // setAllPoliciesValue(policiesView);
-  //   //   counter++;
-  //   //   console.log("counter ", counter )
-  //   //   // return policiesView
-  //   // })
-  //   console.log("Poliocies view 2 ", policiesView)
-  //   // setAllPoliciesValue(policiesView);
-  //   return policiesView
-  // }  
-
+  /**
+   * 
+   * @param {*} _id 
+   * @returns
+   */
   async function fetchPolicyById(_id) {
     const policies = await fetchPolicies()
     try {
@@ -140,8 +159,6 @@ function Fd() {
       
       
 
-
-
   async function fetchPolicyByIdView(_id) {
     const policy = await fetchPolicyById(_id)
     const policyView = new Policy(policy)
@@ -150,7 +167,10 @@ function Fd() {
   }
 
 
-  
+  // load policy list when component loads
+  useEffect(() => {
+    getPolicyItems()
+  }, [])
       
 
 
@@ -158,37 +178,20 @@ function Fd() {
 
   return(
       <>
-          <button onClick={fetchPolicies}>Fetch Policies</button>
-          <button onClick={getPolicyItems}>Fetch Policy Items</button>
+
+          <Button id="policies" variant="contained" color="primary" onClick={()=>{getPolicyItems()}}>Fetch Policy Items</Button>
           <br />
           <div>
-          <ul>
-            {
-              allPolicies.map((p, index) => {
-                return (
-                  <li key={index}>
-                    <p>{p.data.id} | {p.data.premium} | {p.data.maxClaimAmount}</p>
-                  </li>
-                );
-              })
-            }
-          </ul>
+          <PolicyListView policyList={allPolicies} />
           </div>
           
 
           <p>New Policy</p>
-          <input
-          onChange={e => setRiskFactorValue(e.target.value)}
-          placeholder="Risk factor"
-          value={riskFactor}
-          />            
-          <input
-          onChange={e => setPremiumValue(e.target.value)}
-          placeholder="Premium"
-          value={premium}
-          />
+          <NewPolicyDialog updatePremium={updatePremium} updateRiskFactor={updateRiskFactor} createNewPolicy={newPolicy}/>
+          
+          {/* <PremiumSlider updatePremium={updatePremium}/> */}
 
-          <button onClick={newPolicy}>Create new policy</button>
+
           <br />
 
           <p>Insure Policy</p>
