@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import Policy from '../UI_models/Policy/Policy'
 
 import { Button } from '@material-ui/core';
+import DataGrid from './DataGrid'
 
 
 import PolicyListView from './PolicyListView'
@@ -20,6 +21,7 @@ function Fd() {
   const [riskFactor, setRiskFactorValue] = useState('')
   const [policyId, setPolicyIdValue] = useState('')
   const [allPolicies, setAllPoliciesValue] = useState([])
+  const [selectedPolicyId, setSelectedPolicyId] = useState('')
 
   const updatePremium = (premiumValue) => {
     setPremiumValue(premiumValue)
@@ -27,6 +29,14 @@ function Fd() {
 
   const updateRiskFactor = (riskFactorValue) => {
     setRiskFactorValue(riskFactorValue)
+  }
+
+  // const selectPolicyId = (policyId) => {
+  //   setSelectedPolicyId(policyId)
+  // }
+
+  function selectPolicyId(policyId) {
+    return setSelectedPolicyId(policyId)
   }
 
 
@@ -64,7 +74,8 @@ function Fd() {
    * Insure a selected policy. Signer is required
    * @param {string} _id 
    */
-  async function insurePolicy(_id) {
+  async function insurePolicy(_id=selectedPolicyId) {
+    console.log("Insuring policy id: ", _id)
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum); // make sure it is connected to metamask
       const signer = provider.getSigner();
@@ -181,9 +192,9 @@ function Fd() {
 
           <Button id="policies" variant="contained" color="primary" onClick={()=>{getPolicyItems()}}>Fetch Policy Items</Button>
           <br />
-          <div>
+          {/* <div>
           <PolicyListView policyList={allPolicies} />
-          </div>
+          </div> */}
           
 
           <p>New Policy</p>
@@ -203,6 +214,8 @@ function Fd() {
           <button onClick={() => fetchPolicyById(policyId)}>View Policy</button>
           <button onClick={() => fetchPolicyByIdView(policyId)}>View Policy pretty</button>
           <button onClick={() => insurePolicy(policyId)}>Insure policy</button>
+
+          <DataGrid policyList={allPolicies} insurePolicy={insurePolicy} selectPolicyId={selectPolicyId} selectedPolicy={selectedPolicyId}/>
 
 
 

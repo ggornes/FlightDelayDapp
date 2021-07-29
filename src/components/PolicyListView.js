@@ -22,7 +22,16 @@ function createData(policyId, policyholder, premium, insurer, maxClaimAmount) {
 export default function BasicTable({policyList}) {
   const rows = []
   console.log("data passed to child: ", policyList)
-  policyList.map(m => {rows.push(createData(m.data.id, m.data.policyholder, m.data.premium, m.data.insurer, m.data.maxClaimAmount))})
+  policyList.map(m => {
+    rows.push(
+      createData(
+        m.data.id,
+        m.data.policyholder,
+        m.data.premium,
+        m.data.insurer,
+        m.data.maxClaimAmount
+    ))
+  })
   // policyList.map(m => {console.log(m.data.id)})
   const classes = useStyles();
 
