@@ -1,7 +1,21 @@
 import { ethers } from 'ethers'
 import { useState, useEffect } from 'react';
+import { useContext } from 'react'
+import { AppContext } from '../App'
 
 function Web3ConnectionManager() {
+
+    const {state, dispatch} = useContext(AppContext);
+
+    console.log("State: ", state)
+
+
+
+    const updateAccount = (newAddress, newBalance) => {
+        dispatch({ type: 'UPDATE_ACCOUNT', data: {newAddress, newBalance}});
+    };
+
+
 
     const [isMetamask, setIsMetamask] = useState('')
     const [isConnected, setIsConnected] = useState(false)
@@ -10,6 +24,7 @@ function Web3ConnectionManager() {
 
     // connect to wallet
     async function requestAccount() {
+        
         // if (isMetamask) {
             const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -29,6 +44,11 @@ function Web3ConnectionManager() {
         //     alert("Please make sure MetaMask plugin is installed")
         // }
         
+
+        updateAccount(account, formattedBalance)
+        //updateBalance(formattedBalance)
+        
+        
     }
 
     useEffect(() => {
@@ -45,10 +65,10 @@ function Web3ConnectionManager() {
 
     return (
         <div>
-            <p>Metamask status: {isConnected ? "Connected":"Not connected"}</p>
+            {/* <p>Metamask status: {isConnected ? "Connected":"Not connected"}</p>
             <button onClick={requestAccount}>Connect to MetaMask</button>
             <p>Account: {activeAccount}</p>
-            <p>Balance: {activeAccountBalance}</p>
+            <p>Balance: {activeAccountBalance}</p> */}
         </div>
     )
 }

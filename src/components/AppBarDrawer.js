@@ -29,6 +29,9 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
+import { useContext } from 'react'
+import { AppContext } from '../App'
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +68,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
+
   const classes = useStyles();
+
+  const {state, dispatch} = useContext(AppContext);
+
+  console.log("App bar state: ", state)
 
   return (
     <div className={classes.root}>
@@ -85,8 +93,9 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
           <div className={classes.sectionDesktop}>
             <List>
               <ListItem key={"Account"}>
+                
                 <Chip
-                  label="User Account"
+                  label={state.accountDetails.newAddress}
                   clickable
                   icon={<AccountBoxIcon />}
                   color="inherit"
@@ -96,7 +105,7 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
             <List>
               <ListItem key={"Balance"}>
                 <Chip
-                  label="Account Balance"
+                  label={state.accountDetails.newBalance}
                   clickable
                   icon={<AccountBalanceWalletIcon />}
                   color="inherit"
@@ -173,7 +182,7 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
       <main className={classes.content}>
         <Toolbar />
             {Web3ConnectionManager}
-            <Container maxWidth="sm">
+            <Container maxWidth="lg">
               <Box my={4}>
                 {Fd}
               </Box>
