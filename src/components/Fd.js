@@ -39,6 +39,10 @@ function Fd() {
     return setSelectedPolicyId(policyId)
   }
 
+  function getSelectedPolicy() {
+    return selectedPolicyId
+  }
+
 
   /**
    * Submit a new policy. Account signature is required
@@ -215,7 +219,7 @@ function Fd() {
           <button onClick={() => fetchPolicyByIdView(policyId)}>View Policy pretty</button>
           <button onClick={() => insurePolicy(policyId)}>Insure policy</button>
 
-          <DataGrid policyList={allPolicies} insurePolicy={insurePolicy} selectPolicyId={selectPolicyId} selectedPolicy={selectedPolicyId}/>
+          <DataGrid policyList={allPolicies} insurePolicy={insurePolicy}/>
 
 
 

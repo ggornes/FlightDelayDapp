@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
+import Policy from '../UI_models/Policy/Policy';
 
 
 
@@ -13,13 +14,16 @@ function createData(id, policyholder, premium, insurer, maxClaimAmount) {
 
 
 
-export default function RenderCellGrid({policyList, insurePolicy, selectPolicyId, selectedPolicy}) {
+export default function RenderCellGrid({policyList, insurePolicy}) {
 
   const handleClick = (policyId) => {
-    selectPolicyId(policyId)
+    //selectPolicyId(policyId)
     console.log("Policy selected: ", policyId)
-    console.log("Policy selected: ", selectedPolicy)
-    // insurePolicy()
+    // console.log("Policy selected: ", selectedPolicy)
+    // const selection = getSelectedPolicy()
+    // console.log("Selection: ", selection)
+    
+    insurePolicy(policyId)
   }
 
   const columns = [
