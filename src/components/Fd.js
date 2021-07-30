@@ -101,6 +101,8 @@ function Fd() {
       }
     }
 
+    getPolicyItems()
+
   }
 
   // todo: look how to create a subgraph https://thegraph.com/docs/developer/quick-start

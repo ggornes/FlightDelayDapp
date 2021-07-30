@@ -3,7 +3,8 @@ import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
 import Policy from '../UI_models/Policy/Policy';
 
-
+import { useContext } from 'react'
+import { AppContext } from '../App'
 
 
 function createData(id, policyholder, premium, insurer, maxClaimAmount) {
@@ -16,13 +17,10 @@ function createData(id, policyholder, premium, insurer, maxClaimAmount) {
 
 export default function RenderCellGrid({policyList, insurePolicy}) {
 
+  const {state, dispatch} = useContext(AppContext);
+
   const handleClick = (policyId) => {
-    //selectPolicyId(policyId)
     console.log("Policy selected: ", policyId)
-    // console.log("Policy selected: ", selectedPolicy)
-    // const selection = getSelectedPolicy()
-    // console.log("Selection: ", selection)
-    
     insurePolicy(policyId)
   }
 
@@ -89,14 +87,14 @@ export default function RenderCellGrid({policyList, insurePolicy}) {
       width: 150,
       renderCell: (params) => (
         <span>
-          {params.row.id}
           <Button
+            // make button disabled if policy is already insured or if policy holder is same as current account address
+            disabled={params.row.policyholder.toString().toLowerCase() === state.accountDetails.newAddress.toString().toLowerCase() || params.row.insurer !== "0x0000000000000000000000000000000000000000"}
             variant="contained"
             color="primary"
             size="small"
             style={{ marginLeft: 16 }}
             onClick={()=>{
-              console.log("PAPARAAAAMS ", params)
               return(                
                 handleClick(params.row.id)
               )
@@ -116,26 +114,9 @@ export default function RenderCellGrid({policyList, insurePolicy}) {
 
 
 
-  const rows2 = []
-  const rows = []
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     date: new Date(1979, 0, 1),
-  //   },
-  //   {
-  //     id: 2,
-  //     date: new Date(1984, 1, 1),
-  //   },
-  //   {
-  //     id: 3,
-  //     date: new Date(1992, 2, 1),
-  //   },
-  // ];
 
-  // const rows = [
-  //   {id: 1, policyholder: "0x3f3...332", premium: 1.23, insurer: "0x1a2z...9d8", maxClaimAmount: 5.32}
-  // ]
+  const rows = []
+
 
   console.log("Data passed from Fd to DataGrid: ", policyList)
   policyList.map(m => {
@@ -149,7 +130,7 @@ export default function RenderCellGrid({policyList, insurePolicy}) {
     ))
   })
   console.log(rows)
-  // console.log(rows2)
+
   return (
     <div style={{ height: 300, width: '100%' }}>
       <DataGrid rows={rows} columns={columns} />
