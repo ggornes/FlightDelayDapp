@@ -26,22 +26,25 @@ const useStyles = makeStyles((theme) => ({
 
   
 
-export default function PremiumSlider({updatePremium, updateRiskFactor}) {
+export default function PremiumSlider({
+    updatePremium,
+    // updateRiskFactor
+  }) {
   const [premiumValue, setValue] = React.useState(0.0001);
-  const [riskFactorValue, setRiskFactorValue] = React.useState(10000)
+  // const [riskFactorValue, setRiskFactorValue] = React.useState(10000)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     updatePremium(newValue.toString())
   };
 
-  const handleRiskFactorChange = (e, newValue) => {
-      console.log(newValue)
-      setRiskFactorValue(newValue)
-      updateRiskFactor(newValue.toString())
-  }
+  // const handleRiskFactorChange = (e, newValue) => {
+  //     console.log(newValue)
+  //     setRiskFactorValue(newValue)
+  //     updateRiskFactor(newValue.toString())
+  // }
 
-  const classes = useStyles();
+  // const classes = useStyles();
   
 
   return (
@@ -61,13 +64,11 @@ export default function PremiumSlider({updatePremium, updateRiskFactor}) {
         valueLabelDisplay="auto"
         aria-labelledby="non-linear-slider"
       />
-      <form className={classes.root} noValidate autoComplete="off">
-        {/* <TextField id="standard-basic" label="Standard" />
+      {/* <form className={classes.root} noValidate autoComplete="off"> */}
         <TextField id="filled-basic" label="Filled" variant="filled" /> */}
         <TextField id="premium" label="Premium" variant="outlined" fullWidth value={premiumValue} />
-        {/* <TextField id="outlined-basic" label="Risk Factor" variant="outlined" fullWidth onChange={handleRiskFactorChange} value={riskFactorValue}/> */}
-        <TextField id="riskFactor" label="Risk Factor" variant="outlined" fullWidth onChange={e => updateRiskFactor(e.target.value)}/>
-      </form>
+        {/* <TextField id="riskFactor" label="Risk Factor" variant="outlined" fullWidth onChange={e => updateRiskFactor(e.target.value)}/> */}
+      {/* </form> */}
     </div>
   );
 }

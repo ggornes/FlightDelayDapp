@@ -12,6 +12,7 @@ import DataGrid from './DataGrid'
 import PolicyListView from './PolicyListView'
 import NewPolicyDialog from './NewPolicyDialog'
 
+import CachedIcon from '@material-ui/icons/Cached';
 
 const fdContractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
 
@@ -114,7 +115,7 @@ function Fd() {
 
       try {
         const policies = await contract.getPolicies()
-        console.log('Contract policies: ', policies)
+        // console.log('Contract policies: ', policies)
         return (policies)
 
         // const policyItems = policies.map(makePolicyItems)
@@ -146,8 +147,8 @@ function Fd() {
     const policies = await fetchPolicies()
     try {
       const policyItems = policies.map(makePolicyItems) // policies.map(p => makePolicyItems(p))
-      console.log(policyItems)
-      policyItems.map(m => {console.log(m.data)})
+      // console.log(policyItems)
+      // policyItems.map(m => {console.log(m.data)})
       setAllPoliciesValue(policyItems)      
     } catch(err) {
       console.log("Could not fetch policies. Err: ", err)
@@ -196,7 +197,15 @@ function Fd() {
   return(
       <>
 
-          <Button id="policies" variant="contained" color="primary" onClick={()=>{getPolicyItems()}}>Fetch Policy Items</Button>
+          <Button
+            id="policies"
+            variant="contained"
+            color="primary"
+            onClick={()=>{getPolicyItems()}}
+            startIcon={<CachedIcon/>}
+          >
+            Reload Data
+          </Button>
           <br />
           {/* <div>
           <PolicyListView policyList={allPolicies} />
