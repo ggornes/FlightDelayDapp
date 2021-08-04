@@ -32,6 +32,12 @@ import Box from '@material-ui/core/Box';
 import { useContext } from 'react'
 import { AppContext } from '../App'
 
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import About from './pages/About'
+import Fdd from './Fd'
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -76,6 +82,8 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
   console.log("App bar state: ", state)
 
   return (
+    <BrowserRouter>
+    
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
@@ -147,18 +155,20 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
                 <ListItemText primary={text} />
               </ListItem>
             ))} */}
-            <ListItem button key={"Dashboard"}>
-              <ListItemIcon><DashboardIcon/></ListItemIcon>
-              <ListItemText primary={"Dashboard"}/>
-            </ListItem>
-            <ListItem button key={"Policies"}>
-              <ListItemIcon><ViewListIcon/></ListItemIcon>
-              <ListItemText primary={"Policies"}/>
-            </ListItem>            
-            <ListItem button key={"New Policy"}>
-              <ListItemIcon><AddBoxIcon/></ListItemIcon>
-              <ListItemText primary={"New Policy"}/>
-            </ListItem>              
+            <NavLink to="/dashboard" style={{ textDecoration: 'none' }}>
+              <ListItem button key={"Dashboard"}>
+                <ListItemIcon><DashboardIcon/></ListItemIcon>
+                <ListItemText primary={"Dashboard"}/>
+              </ListItem>
+            </NavLink>
+              <ListItem button key={"Policies"}>
+                <ListItemIcon><ViewListIcon/></ListItemIcon>
+                <ListItemText primary={"Policies"}/>
+              </ListItem>            
+              <ListItem button key={"New Policy"}>
+                <ListItemIcon><AddBoxIcon/></ListItemIcon>
+                <ListItemText primary={"New Policy"}/>
+              </ListItem>              
           </List>
           <Divider />
           <List>
@@ -172,10 +182,13 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
               <ListItemIcon><HelpOutlineIcon/></ListItemIcon>
               <ListItemText primary={"Help"}/>
             </ListItem>
-            <ListItem button key={"About"}>
-              <ListItemIcon><InfoIcon/></ListItemIcon>
-              <ListItemText primary={"About"}/>
-            </ListItem>                     
+            <NavLink to="/about" style={{ textDecoration: 'none' }}>
+              <ListItem button key={"About"}>
+                <ListItemIcon><InfoIcon/></ListItemIcon>
+                <ListItemText primary={"About"}/>
+              </ListItem>   
+            </NavLink>
+                  
           </List>
         </div>
       </Drawer>
@@ -184,10 +197,15 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
             {Web3ConnectionManager}
             <Container maxWidth="lg">
               <Box my={4}>
-                {Fd}
+                {/* {Fd} */}
+                <Route exact path="/dashboard" component={Fdd} />
+                <Route exact path="/about" component={About} />
               </Box>
             </Container>
       </main>
     </div>
+    
+    
+    </BrowserRouter>
   );
 }

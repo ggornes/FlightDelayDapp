@@ -9,13 +9,18 @@ import reportWebVitals from './reportWebVitals';
 
 
 
+
+
 ReactDOM.render(
   <ThemeProvider theme={theme}>
+
     <React.StrictMode>
       {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
       <CssBaseline />      
       <App />
     </React.StrictMode>
+
+
   </ThemeProvider>,
   document.getElementById('root')
 );
