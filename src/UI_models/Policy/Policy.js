@@ -4,7 +4,7 @@ import schemas from "./schemas"
 import { ethers } from 'ethers'
 
 var Policy = function (data) {
-    console.log('data: ', data)
+    // console.log('data: ', data)
     this.data = this.sanitize(data);
     // this.data = data;
     // this.id = data[0].id.toNumber();
