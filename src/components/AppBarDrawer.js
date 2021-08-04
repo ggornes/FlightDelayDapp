@@ -37,6 +37,9 @@ import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import About from './pages/About'
 import Fdd from './Fd'
+import Landing from './pages/Landing';
+import PoliciesPage from './pages/Policies';
+import NewPolicyPage from './pages/NewPolicy';
 
 const drawerWidth = 240;
 
@@ -73,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   
 }));
 
-export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
+export default function ClippedDrawer() {
 
   const classes = useStyles();
 
@@ -82,7 +85,7 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
   console.log("App bar state: ", state)
 
   return (
-    <BrowserRouter>
+    // <BrowserRouter>
     
     <div className={classes.root}>
       <CssBaseline />
@@ -93,7 +96,10 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
           </List>
           
           <Typography variant="h6" noWrap>
-            Flight Delay Dapp Demo
+          <NavLink to="/" style={{ textDecoration: 'none' }}>
+          Flight Delay Dapp Demo
+          </NavLink>
+            
           </Typography>
 
           <div className={classes.grow} />
@@ -161,14 +167,18 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
                 <ListItemText primary={"Dashboard"}/>
               </ListItem>
             </NavLink>
+            <NavLink to="/policies" style={{ textDecoration: 'none' }}>
               <ListItem button key={"Policies"}>
                 <ListItemIcon><ViewListIcon/></ListItemIcon>
                 <ListItemText primary={"Policies"}/>
-              </ListItem>            
+              </ListItem>
+            </NavLink> 
+            <NavLink to="/policies/new" style={{ textDecoration: 'none' }}>     
               <ListItem button key={"New Policy"}>
                 <ListItemIcon><AddBoxIcon/></ListItemIcon>
                 <ListItemText primary={"New Policy"}/>
-              </ListItem>              
+              </ListItem>
+            </NavLink>            
           </List>
           <Divider />
           <List>
@@ -194,18 +204,21 @@ export default function ClippedDrawer({Web3ConnectionManager, Fd}) {
       </Drawer>
       <main className={classes.content}>
         <Toolbar />
-            {Web3ConnectionManager}
             <Container maxWidth="lg">
               <Box my={4}>
-                {/* {Fd} */}
+              <Route exact path="/" component={Landing} />
                 <Route exact path="/dashboard" component={Fdd} />
                 <Route exact path="/about" component={About} />
+                <Route exact path="/policies" component={PoliciesPage} />
+                <Route exact path="/policies/new" component={NewPolicyPage} />
               </Box>
             </Container>
       </main>
     </div>
+
     
     
-    </BrowserRouter>
+    
+    // </BrowserRouter>
   );
 }

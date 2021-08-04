@@ -11,6 +11,7 @@ import Fd from './components/Fd'
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import { useReducer, createContext } from 'react'
 
@@ -58,10 +59,14 @@ function App() {
 
     <div className="App">
       <AppContext.Provider value={{ state, dispatch }}>
-        <AppBarDrawer
-          Web3ConnectionManager={<Web3ConnectionManager/>}
-          Fd={<Fd/>}
-        />
+        <Web3ConnectionManager/>
+        <BrowserRouter>
+          <AppBarDrawer
+            // Web3ConnectionManager={<Web3ConnectionManager/>}
+            // Fd={<Fd/>}
+          />        
+        </BrowserRouter>
+        
       </AppContext.Provider>
     
     </div>    
