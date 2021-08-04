@@ -65,7 +65,7 @@ export default function PremiumSlider({
         aria-labelledby="non-linear-slider"
       />
       {/* <form className={classes.root} noValidate autoComplete="off"> */}
-        <TextField id="filled-basic" label="Filled" variant="filled" /> */}
+
         <TextField id="premium" label="Premium" variant="outlined" fullWidth value={premiumValue} />
         {/* <TextField id="riskFactor" label="Risk Factor" variant="outlined" fullWidth onChange={e => updateRiskFactor(e.target.value)}/> */}
       {/* </form> */}
