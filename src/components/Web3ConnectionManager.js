@@ -63,14 +63,16 @@ function Web3ConnectionManager() {
         }
     }, [])
 
-    return (
-        <div>
-            {/* <p>Metamask status: {isConnected ? "Connected":"Not connected"}</p>
-            <button onClick={requestAccount}>Connect to MetaMask</button>
-            <p>Account: {activeAccount}</p>
-            <p>Balance: {activeAccountBalance}</p> */}
-        </div>
-    )
+    // return (
+    //     <div>
+    //         {/* <p>Metamask status: {isConnected ? "Connected":"Not connected"}</p>
+    //         <button onClick={requestAccount}>Connect to MetaMask</button>
+    //         <p>Account: {activeAccount}</p>
+    //         <p>Balance: {activeAccountBalance}</p> */}
+    //     </div>
+    // )
+
+    return null
 }
 
 export default Web3ConnectionManager;
