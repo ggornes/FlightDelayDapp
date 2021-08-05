@@ -54,9 +54,9 @@ export default function PremiumSlider({
       </Typography>
       <Slider
         value={premiumValue}
-        min={0.0001}
-        step={0.0001}
-        max={25}
+        min={0.0000000000000001}
+        step={0.0000000000000001}
+        max={1}
         // scale={(x) => x ** 10}
         getAriaValueText={valueLabelFormat}
         valueLabelFormat={valueLabelFormat}

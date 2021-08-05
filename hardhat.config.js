@@ -1,5 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 
+const ROPSTEN_PRIVATE_KEY = ""
+
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
@@ -27,6 +29,15 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337
-    }
+    },
+    // ropsten: {
+    //   url: "https://ropsten.infura.io/v3/your-project-id",
+    //   accounts: [`0x${your-private-key}`]
+    // },
+    ropsten: {
+      url: "https://ropsten.infura.io/v3/29e443690e0c4bd5ad2643452831a74e",
+      accounts: [`0x${ROPSTEN_PRIVATE_KEY}`],
+    }        
   }
 };
+

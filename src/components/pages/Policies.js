@@ -14,7 +14,8 @@ import NewPolicyDialog from '../NewPolicyDialog'
 
 import CachedIcon from '@material-ui/icons/Cached';
 
-const fdContractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+// const fdContractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+const fdContractAddress = "0xA4dcf6d36558203B3f78b23056870b5c9b5Ae68f"
 
 function PoliciesPage() {
 

@@ -14,20 +14,21 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-  await greeter.deployed();
-  console.log("Greeter deployed to:", greeter.address);
+  
+  // const Greeter = await hre.ethers.getContractFactory("Greeter");
+  // const greeter = await Greeter.deploy("Hello, Hardhat!");
+  // await greeter.deployed();
+  // console.log("Greeter deployed to:", greeter.address);
 
-  const Token = await hre.ethers.getContractFactory("Token");
-  const token = await Token.deploy();
-  await token.deployed();
-  console.log("Token contract deployed to: ", token.address);
+  // const Token = await hre.ethers.getContractFactory("Token");
+  // const token = await Token.deploy();
+  // await token.deployed();
+  // console.log("Token contract deployed to: ", token.address);
 
-  const Poliza = await hre.ethers.getContractFactory("PolizaRetraso");
-  const poliza = await Poliza.deploy();
-  await poliza.deployed();
-  console.log("PolizaRetraso contract deployed to: ", poliza.address);
+  // const Poliza = await hre.ethers.getContractFactory("PolizaRetraso");
+  // const poliza = await Poliza.deploy();
+  // await poliza.deployed();
+  // console.log("PolizaRetraso contract deployed to: ", poliza.address);
 
 
   const Fd = await hre.ethers.getContractFactory("FdContract");
