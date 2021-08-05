@@ -26,4 +26,11 @@ node_modules
 
 #Hardhat files
 cache
-artifacts
+src/artifacts/build-info
+src/artifacts/hardhat
+src/artifacts/contracts/FdContract_v1.sol
+src/artifacts/contracts/Greeter.sol
+src/artifacts/contracts/PolizaRetraso.sol
+src/artifacts/contracts/Token.sol
+
+
